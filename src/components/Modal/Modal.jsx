@@ -96,7 +96,7 @@ export default function Modal({
             {isDoubled ? (
               <div className={Styles.doubleBtn}>
                 <Button type="submit" text={defaultButtonText} />
-                <Button type="submit" text={buttonText2} />
+                <Button type="submit" text={buttonText2} onClick={closeModal} />
               </div>
             ) : (
               <Button type="submit" text={defaultButtonText} />

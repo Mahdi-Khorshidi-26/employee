@@ -43,7 +43,7 @@ export default function Home() {
         closeModal={handleCloseBtn}
         isClosed={close}
       />
-      {closeModal && <Modal />}
+      {!closeModal && <Modal isClosed={closeModal} closeModal={openModal}/>}
       <div className={Styles.table_wrapper}>
         <div className={Styles.btnContainer}>
           <Button type="link" text="افزودن" />

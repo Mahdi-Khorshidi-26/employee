@@ -9,20 +9,7 @@
     transform: translate(-50%, -50%);
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     border-radius: .3rem;
-}
-
-.boxContainerModal {
-    border: .1rem solid #999999;
-    padding: 1rem 1rem;
-    width: 35%;
-    height: 35%;
-    margin: 0 auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    border-radius: .3rem;
+    background-color: #324860;
 }
 
 .boxContainer .formAccordion {
@@ -35,6 +22,21 @@
     padding: 2rem 2rem;
     width: 100%;
     font-size: 1.3rem;
+    background-color: white;
+}
+
+.boxContainerModal {
+    border: .1rem solid #999999;
+    padding: 1rem 1rem;
+    width: 35%;
+    height: 35%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+    border-radius: .3rem;
+    background-color: #324860;
 }
 
 .boxContainerModal .formModal {
@@ -46,8 +48,13 @@
     font-size: 1.3rem;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    height: 80%
+    height: 80%;
+    background-color: #fff;
 }
+
+
+
+
 
 .doubleBtn {
     display: flex;
@@ -61,17 +68,18 @@
     align-items: center;
     justify-content: space-between;
     font-size: 1.6rem;
+    color: white;
 }
 
 
 .closeIcon {
-    color: #333;
     opacity: 0.7;
     cursor: pointer;
+    color: white;
     transition: all .2s;
 }
 
 .closeIcon:hover {
-    color: black;
+    opacity: 1;
     transition: all .2s;
 }
