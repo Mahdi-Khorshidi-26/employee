@@ -15,6 +15,8 @@ Modal.propTypes = {
   setFoundUser: PropTypes.func,
   closeModal: PropTypes.func,
   isClosed: PropTypes.bool,
+  modalType: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default function Modal({
@@ -26,6 +28,8 @@ export default function Modal({
   setFoundUser = () => {},
   closeModal = () => {},
   isClosed = true,
+  modalType = "add",
+  onClick = () => {},
 }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -63,45 +67,57 @@ export default function Modal({
               <IoMdClose className={Styles.closeIcon} />
             </span>
           </div>
-          <form
-            onSubmit={(e) => handleFormSubmit(e)}
-            className={
-              isModal ? `${Styles.formModal}` : `${Styles.formAccordion}`
-            }
-          >
-            <Input
-              id="firstName"
-              label="نام"
-              setValue={setFirstName}
-              type="text"
-              value={firstName}
-              required={!isModal}
-            />
-            <Input
-              id="lastName"
-              label="نام خانوادگی"
-              setValue={setLastName}
-              type="text"
-              value={lastName}
-              required={!isModal}
-            />
-            <Input
-              id="nationalId"
-              label="کد ملی"
-              setValue={setNationalId}
-              type="text"
-              value={nationalId}
-              required={!isModal}
-            />
-            {isDoubled ? (
-              <div className={Styles.doubleBtn}>
+          {modalType === "add" ? (
+            <form
+              onSubmit={(e) => handleFormSubmit(e)}
+              className={
+                isModal ? `${Styles.formModal}` : `${Styles.formAccordion}`
+              }
+            >
+              <Input
+                id="firstName"
+                label="نام"
+                setValue={setFirstName}
+                type="text"
+                value={firstName}
+                required={!isModal}
+              />
+              <Input
+                id="lastName"
+                label="نام خانوادگی"
+                setValue={setLastName}
+                type="text"
+                value={lastName}
+                required={!isModal}
+              />
+              <Input
+                id="nationalId"
+                label="کد ملی"
+                setValue={setNationalId}
+                type="text"
+                value={nationalId}
+                required={!isModal}
+              />
+              {isDoubled ? (
+                <div className={Styles.doubleBtn}>
+                  <Button type="submit" text={defaultButtonText} />
+                  <Button
+                    type="submit"
+                    text={buttonText2}
+                    onClick={closeModal}
+                  />
+                </div>
+              ) : (
                 <Button type="submit" text={defaultButtonText} />
-                <Button type="submit" text={buttonText2} onClick={closeModal} />
-              </div>
-            ) : (
-              <Button type="submit" text={defaultButtonText} />
-            )}
-          </form>
+              )}
+            </form>
+          ) : (
+            <>
+              <p>آیا رکورد حذف شود ؟</p>
+              <Button text="بله" onClick={()=>onClick()} />
+              <Button text="خیر" onClick={closeModal} />
+            </>
+          )}
         </div>
       )}
     </>

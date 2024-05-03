@@ -17,6 +17,7 @@ export default function Home() {
   const [usersState, setUsersState] = useState(users);
   const [close, setClose] = useState(true);
   const [closeModal, setCloseModal] = useState(true);
+  // const [modalType, setModalType] = useState("add");
   function handleBackButton() {
     setFoundUser(null);
   }
@@ -26,10 +27,15 @@ export default function Home() {
   function openModal() {
     setCloseModal((prevClose) => !prevClose);
   }
-  // function handleDeletingUser(userId) {
-  //   const remainedUsers = usersState.filter((user) => user.id !== userId);
-  //   // setUsersState(remainedUsers);
-  //   console.log(remainedUsers);
+  function handleDeletingUser(userId) {
+    const remainedUsers = usersState.filter((user) => user.id !== userId);
+    setUsersState(remainedUsers);
+    setCloseModal((prevClose) => !prevClose);
+    console.log(remainedUsers);
+    console.log(userId);
+  }
+  // function addUser(){
+
   // }
 
   return (
@@ -42,8 +48,17 @@ export default function Home() {
         setFoundUser={setFoundUser}
         closeModal={handleCloseBtn}
         isClosed={close}
+        modalType="search"
       />
-      {!closeModal && <Modal isClosed={closeModal} closeModal={openModal}/>}
+      {!closeModal && (
+        <Modal
+          isClosed={closeModal}
+          closeModal={openModal}
+          name="حذف"
+          modalType="delete"
+          onClick={handleDeletingUser}
+        />
+      )}
       <div className={Styles.table_wrapper}>
         <div className={Styles.btnContainer}>
           <Button type="link" text="افزودن" />
@@ -108,20 +123,30 @@ function User({ user, foundUser, onClick, handleBackButton }) {
           foundUser={foundUser}
           onClick={onClick}
           handleBackButton={handleBackButton}
+          userId={user.id}
         />
       </td>
     </tr>
   );
 }
 
-function Actions({ foundUser, onClick, handleBackButton }) {
+function Actions({ foundUser, onClick, handleBackButton, userId }) {
   return (
     <>
-      <BiShow style={{ color: "#119cb6" }} onClick={onClick} />
-      <LiaEditSolid style={{ color: "#e4aa49" }} onClick={onClick} />
-      <GrMap style={{ color: "#b22e3a" }} onClick={onClick} />
-      <RiDeleteBin6Line style={{ color: "#ee9a93" }} onClick={onClick} />
-      <AiOutlineBarChart style={{ color: "orange" }} onClick={onClick} />
+      <BiShow style={{ color: "#119cb6" }} onClick={() => onClick(userId)} />
+      <LiaEditSolid
+        style={{ color: "#e4aa49" }}
+        onClick={() => onClick(userId)}
+      />
+      <GrMap style={{ color: "#b22e3a" }} onClick={() => onClick(userId)} />
+      <RiDeleteBin6Line
+        style={{ color: "#ee9a93" }}
+        onClick={() => onClick(userId)}
+      />
+      <AiOutlineBarChart
+        style={{ color: "orange" }}
+        onClick={() => onClick(userId)}
+      />
       {foundUser && <IoArrowBack onClick={handleBackButton} />}
     </>
   );

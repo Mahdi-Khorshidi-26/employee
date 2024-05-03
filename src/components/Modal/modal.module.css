@@ -10,6 +10,7 @@
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     border-radius: .3rem;
     background-color: #324860;
+    z-index: 10;
 }
 
 .boxContainer .formAccordion {
@@ -37,6 +38,7 @@
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     border-radius: .3rem;
     background-color: #324860;
+    z-index: 10;
 }
 
 .boxContainerModal .formModal {
@@ -51,16 +53,11 @@
     height: 80%;
     background-color: #fff;
 }
-
-
-
-
-
 .doubleBtn {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
+    justify-content:center;
+    gap: 5rem;
 }
 
 .formHeader {
