@@ -7,6 +7,7 @@ export default function Input({
   id,
   type,
   required = false,
+  disable = false,
 }) {
   return (
     <div className={Styles.inputContainer}>
@@ -17,6 +18,7 @@ export default function Input({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         required={required}
+        disabled={disable}
       />
     </div>
   );
@@ -28,4 +30,5 @@ Input.propTypes = {
   id: PropTypes.string,
   type: PropTypes.string,
   required: PropTypes.bool,
+  disable: PropTypes.bool,
 };

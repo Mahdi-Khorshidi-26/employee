@@ -67,7 +67,9 @@ export default function Modal({
               <IoMdClose className={Styles.closeIcon} />
             </span>
           </div>
-          {modalType === "add" ? (
+          {modalType === "add" ||
+          modalType === "edit" ||
+          modalType === "show" ? (
             <form
               onSubmit={(e) => handleFormSubmit(e)}
               className={
@@ -81,6 +83,7 @@ export default function Modal({
                 type="text"
                 value={firstName}
                 required={!isModal}
+                disable={modalType === "show"}
               />
               <Input
                 id="lastName"
@@ -89,6 +92,7 @@ export default function Modal({
                 type="text"
                 value={lastName}
                 required={!isModal}
+                disable={modalType === "show"}
               />
               <Input
                 id="nationalId"
@@ -97,10 +101,15 @@ export default function Modal({
                 type="text"
                 value={nationalId}
                 required={!isModal}
+                disable={modalType === "show"}
               />
               {isDoubled ? (
                 <div className={Styles.doubleBtn}>
-                  <Button type="submit" text={defaultButtonText} />
+                  <Button
+                    type="submit"
+                    text={defaultButtonText}
+                    onClick={closeModal}
+                  />
                   <Button
                     type="submit"
                     text={buttonText2}
@@ -114,7 +123,7 @@ export default function Modal({
           ) : (
             <>
               <p>آیا رکورد حذف شود ؟</p>
-              <Button text="بله" onClick={()=>onClick()} />
+              <Button text="بله" onClick={() => onClick()} />
               <Button text="خیر" onClick={closeModal} />
             </>
           )}

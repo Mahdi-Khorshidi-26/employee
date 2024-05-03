@@ -17,7 +17,8 @@ export default function Home() {
   const [usersState, setUsersState] = useState(users);
   const [close, setClose] = useState(true);
   const [closeModal, setCloseModal] = useState(true);
-  // const [modalType, setModalType] = useState("add");
+  const [userId, setUserId] = useState(0);
+  const [modalType, setModalType] = useState("add");
   function handleBackButton() {
     setFoundUser(null);
   }
@@ -27,16 +28,19 @@ export default function Home() {
   function openModal() {
     setCloseModal((prevClose) => !prevClose);
   }
-  function handleDeletingUser(userId) {
+  function handleDeletingUser() {
     const remainedUsers = usersState.filter((user) => user.id !== userId);
     setUsersState(remainedUsers);
     setCloseModal((prevClose) => !prevClose);
-    console.log(remainedUsers);
+  }
+  function handleAddUser() {}
+  function handleShowUser() {
+    // let shownUser = usersState.find((user) => user.id === userId);
+    // setUsersState(shownUser);
+    // console.log(shownUser);
     console.log(userId);
   }
-  // function addUser(){
-
-  // }
+  function handleEditUser() {}
 
   return (
     <>
@@ -48,20 +52,57 @@ export default function Home() {
         setFoundUser={setFoundUser}
         closeModal={handleCloseBtn}
         isClosed={close}
-        modalType="search"
+        modalType="add"
       />
       {!closeModal && (
         <Modal
           isClosed={closeModal}
           closeModal={openModal}
-          name="حذف"
-          modalType="delete"
-          onClick={handleDeletingUser}
+          name={
+            modalType === "delete"
+              ? "حذف"
+              : modalType === "add"
+              ? "افزودن"
+              : modalType === "show"
+              ? "مشاهده"
+              : modalType === "edit"
+              ? "ویرایش"
+              : ""
+          }
+          defaultButtonText={
+            modalType === "add"
+              ? "افزودن"
+              : modalType === "show"
+              ? "بستن"
+              : modalType === "edit"
+              ? "تایید"
+              : ""
+          }
+          isDoubled={modalType !== "show"}
+          modalType={modalType}
+          onClick={
+            modalType === "delete"
+              ? handleDeletingUser
+              : modalType === "show"
+              ? handleShowUser
+              : modalType === "edit"
+              ? handleEditUser
+              : modalType === "add"
+              ? handleAddUser
+              : () => {}
+          }
         />
       )}
       <div className={Styles.table_wrapper}>
         <div className={Styles.btnContainer}>
-          <Button type="link" text="افزودن" />
+          <Button
+            type="link"
+            text="افزودن"
+            onClick={() => {
+              openModal();
+              setModalType("add");
+            }}
+          />
           <Button type="link" text="جستجو" onClick={handleCloseBtn} />
         </div>
         <table className={Styles.fl_table}>
@@ -84,6 +125,8 @@ export default function Home() {
                       foundUser={foundUser}
                       onClick={openModal}
                       handleBackButton={handleBackButton}
+                      setUserId={setUserId}
+                      setModalType={setModalType}
                     />
                   );
                 })
@@ -95,6 +138,8 @@ export default function Home() {
                       foundUser={foundUser}
                       onClick={openModal}
                       handleBackButton={handleBackButton}
+                      setUserId={setUserId}
+                      setModalType={setModalType}
                     />
                   );
                 })}
@@ -111,7 +156,14 @@ export default function Home() {
   );
 }
 
-function User({ user, foundUser, onClick, handleBackButton }) {
+function User({
+  user,
+  foundUser,
+  onClick,
+  handleBackButton,
+  setUserId,
+  setModalType,
+}) {
   return (
     <tr>
       <td>{user.id}</td>
@@ -124,28 +176,63 @@ function User({ user, foundUser, onClick, handleBackButton }) {
           onClick={onClick}
           handleBackButton={handleBackButton}
           userId={user.id}
+          setUserId={setUserId}
+          setModalType={setModalType}
         />
       </td>
     </tr>
   );
 }
 
-function Actions({ foundUser, onClick, handleBackButton, userId }) {
+function Actions({
+  foundUser,
+  onClick,
+  handleBackButton,
+  userId,
+  setUserId,
+  setModalType,
+}) {
   return (
     <>
-      <BiShow style={{ color: "#119cb6" }} onClick={() => onClick(userId)} />
+      <BiShow
+        style={{ color: "#119cb6" }}
+        onClick={() => {
+          onClick();
+          setUserId(userId);
+          setModalType("show");
+        }}
+      />
       <LiaEditSolid
         style={{ color: "#e4aa49" }}
-        onClick={() => onClick(userId)}
+        onClick={() => {
+          onClick();
+          setUserId(userId);
+          setModalType("edit");
+        }}
       />
-      <GrMap style={{ color: "#b22e3a" }} onClick={() => onClick(userId)} />
+      <GrMap
+        style={{ color: "#b22e3a" }}
+        onClick={() => {
+          onClick();
+          setUserId(userId);
+          setModalType("show");
+        }}
+      />
       <RiDeleteBin6Line
         style={{ color: "#ee9a93" }}
-        onClick={() => onClick(userId)}
+        onClick={() => {
+          onClick();
+          setUserId(userId);
+          setModalType("delete");
+        }}
       />
       <AiOutlineBarChart
         style={{ color: "orange" }}
-        onClick={() => onClick(userId)}
+        onClick={() => {
+          onClick();
+          setUserId(userId);
+          setModalType("show");
+        }}
       />
       {foundUser && <IoArrowBack onClick={handleBackButton} />}
     </>
