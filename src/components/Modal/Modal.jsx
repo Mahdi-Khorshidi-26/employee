@@ -13,6 +13,8 @@ Modal.propTypes = {
   defaultButtonText: PropTypes.string,
   buttonText2: PropTypes.string,
   setFoundUser: PropTypes.func,
+  closeModal: PropTypes.func,
+  isClosed: PropTypes.bool,
 };
 
 export default function Modal({
@@ -22,24 +24,26 @@ export default function Modal({
   defaultButtonText = "افزودن",
   buttonText2 = "بستن",
   setFoundUser = () => {},
+  closeModal = () => {},
+  isClosed = true,
 }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [nationalId, setNationalId] = useState("");
   function handleFormSubmit(e) {
     e.preventDefault();
-    if (!nationalId && !firstName && !lastName) return;
+    if (!nationalId.trim() && !firstName.trim() && !lastName.trim()) return;
     const inputUser = { firstName, lastName, nationalId };
-    users.find((user) => {
+    let foundUser = users.filter((user) => {
       if (
-        user.firstName === inputUser.firstName &&
-        user.lastName === inputUser.lastName &&
-        user.nationalId === inputUser.nationalId
+        user.firstName === inputUser.firstName.trim() &&
+        user.lastName === inputUser.lastName.trim() &&
+        user.nationalId === inputUser.nationalId.trim()
       ) {
-        setFoundUser(user);
-        // console.log(user);
+        return user;
       }
     });
+    setFoundUser(foundUser);
     setFirstName("");
     setLastName("");
     setNationalId("");
@@ -47,69 +51,59 @@ export default function Modal({
 
   return (
     <>
-      <div
-        className={
-          isModal ? `${Styles.boxContainerModal}` : `${Styles.boxContainer}`
-        }
-      >
-        <div className={Styles.formHeader}>
-          <h3 className={Styles.formTitle}>{name}</h3>
-          <span className={Styles.close}>
-            <IoMdClose className={Styles.closeIcon} />
-          </span>
-        </div>
-        <form
-          onSubmit={(e) => handleFormSubmit(e)}
+      {!isClosed && (
+        <div
           className={
-            isModal ? `${Styles.formModal}` : `${Styles.formAccordion}`
+            isModal ? `${Styles.boxContainerModal}` : `${Styles.boxContainer}`
           }
         >
-          <Input
-            id="firstName"
-            label="نام"
-            setValue={setFirstName}
-            type="text"
-            value={firstName}
-            required={!isModal}
-          />
-          <Input
-            id="lastName"
-            label="نام خانوادگی"
-            setValue={setLastName}
-            type="text"
-            value={lastName}
-            required={!isModal}
-          />
-          <Input
-            id="nationalId"
-            label="کد ملی"
-            setValue={setNationalId}
-            type="text"
-            value={nationalId}
-            required={!isModal}
-          />
-          {isDoubled ? (
-            <div className={Styles.doubleBtn}>
-              <Button>
-                <button>
-                  <a>{defaultButtonText}</a>
-                </button>
-              </Button>
-              <Button>
-                <button>
-                  <a>{buttonText2}</a>
-                </button>
-              </Button>
-            </div>
-          ) : (
-            <Button>
-              <button>
-                <a>{defaultButtonText}</a>
-              </button>
-            </Button>
-          )}
-        </form>
-      </div>
+          <div className={Styles.formHeader}>
+            <h3 className={Styles.formTitle}>{name}</h3>
+            <span className={Styles.close} onClick={closeModal}>
+              <IoMdClose className={Styles.closeIcon} />
+            </span>
+          </div>
+          <form
+            onSubmit={(e) => handleFormSubmit(e)}
+            className={
+              isModal ? `${Styles.formModal}` : `${Styles.formAccordion}`
+            }
+          >
+            <Input
+              id="firstName"
+              label="نام"
+              setValue={setFirstName}
+              type="text"
+              value={firstName}
+              required={!isModal}
+            />
+            <Input
+              id="lastName"
+              label="نام خانوادگی"
+              setValue={setLastName}
+              type="text"
+              value={lastName}
+              required={!isModal}
+            />
+            <Input
+              id="nationalId"
+              label="کد ملی"
+              setValue={setNationalId}
+              type="text"
+              value={nationalId}
+              required={!isModal}
+            />
+            {isDoubled ? (
+              <div className={Styles.doubleBtn}>
+                <Button type="submit" text={defaultButtonText} />
+                <Button type="submit" text={buttonText2} />
+              </div>
+            ) : (
+              <Button type="submit" text={defaultButtonText} />
+            )}
+          </form>
+        </div>
+      )}
     </>
   );
 }

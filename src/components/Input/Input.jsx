@@ -1,6 +1,13 @@
 import Styles from "./input.module.css";
 import PropTypes from "prop-types";
-export default function Input({ value, setValue, label, id, type, required=false }) {
+export default function Input({
+  value,
+  setValue,
+  label,
+  id,
+  type,
+  required = false,
+}) {
   return (
     <div className={Styles.inputContainer}>
       <label htmlFor={id}>{label}</label>

@@ -3,6 +3,25 @@
     height: 100vh;
 }
 
+.notFound {
+    font-size: 1.7rem;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    justify-content: center;
+}
+
+.notFound svg {
+    opacity: 0.6;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.notFound svg:hover {
+    opacity: 1;
+}
+
 /* Table Styles */
 
 .table_wrapper {
@@ -72,7 +91,29 @@
 .actions {
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
+}
+
+.actions svg {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all .3s;
+}
+
+.actions svg:hover {
+    opacity: 1;
+}
+
+.btnContainer {
+    display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+
+.btnContainer a {
+    background-color: #324860;
+    color: white;
 }
 
 /* Responsive */

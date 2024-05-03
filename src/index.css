@@ -27,7 +27,7 @@ body {
   height: 100dvh;
   box-sizing: border-box;
   direction: rtl;
-  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif, 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Arial Narrow', Arial, sans-serif, Courier, monospace, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
 a,

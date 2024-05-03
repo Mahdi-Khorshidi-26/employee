@@ -1,8 +1,15 @@
 import Styles from "./button.module.css";
 import PropTypes from "prop-types";
-export default function Button({ children }) {
-  return <div className={Styles.btnContainer}>{children}</div>;
+export default function Button({ type, text, href = "#", onClick }) {
+  return (
+    <div className={Styles.btnContainer} onClick={onClick}>
+      {type === "submit" ? <button>{text}</button> : <a href={href}>{text}</a>}
+    </div>
+  );
 }
 Button.propTypes = {
-  children: PropTypes.any,
+  type: PropTypes.string,
+  text: PropTypes.string,
+  href: PropTypes.string,
+  onClick: PropTypes.func,
 };

@@ -9,9 +9,29 @@ import Modal from "../components/Modal/Modal";
 import { useState } from "react";
 import { users } from "../components/UserData/Users";
 import { IoArrowBack } from "react-icons/io5";
+import Button from "../components/Button/Button";
+import { ImExit } from "react-icons/im";
 
 export default function Home() {
   const [foundUser, setFoundUser] = useState(null);
+  const [usersState, setUsersState] = useState(users);
+  const [close, setClose] = useState(true);
+  const [closeModal, setCloseModal] = useState(true);
+  function handleBackButton() {
+    setFoundUser(null);
+  }
+  function handleCloseBtn() {
+    setClose((prevState) => !prevState);
+  }
+  function openModal() {
+    setCloseModal((prevClose) => !prevClose);
+  }
+  // function handleDeletingUser(userId) {
+  //   const remainedUsers = usersState.filter((user) => user.id !== userId);
+  //   // setUsersState(remainedUsers);
+  //   console.log(remainedUsers);
+  // }
+
   return (
     <>
       <Modal
@@ -20,9 +40,15 @@ export default function Home() {
         isModal={false}
         name="جستجو"
         setFoundUser={setFoundUser}
+        closeModal={handleCloseBtn}
+        isClosed={close}
       />
-      {/* <Modal /> */}
+      {closeModal && <Modal />}
       <div className={Styles.table_wrapper}>
+        <div className={Styles.btnContainer}>
+          <Button type="link" text="افزودن" />
+          <Button type="link" text="جستجو" onClick={handleCloseBtn} />
+        </div>
         <table className={Styles.fl_table}>
           <thead>
             <tr>
@@ -34,63 +60,69 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {foundUser ? (
-              <tr>
-                <td>{foundUser.id}</td>
-                <td>{foundUser.firstName}</td>
-                <td>{foundUser.lastName}</td>
-                <td>{foundUser.nationalId}</td>
-                <Actions  />
-              </tr>
-            ) : (
-              users.map((user) => {
-                return <User user={user} key={user.id}  />;
-              })
-            )}
+            {foundUser
+              ? foundUser.map((foundUser) => {
+                  return (
+                    <User
+                      user={foundUser}
+                      key={foundUser.id}
+                      foundUser={foundUser}
+                      onClick={openModal}
+                      handleBackButton={handleBackButton}
+                    />
+                  );
+                })
+              : usersState.map((user) => {
+                  return (
+                    <User
+                      user={user}
+                      key={user.id}
+                      foundUser={foundUser}
+                      onClick={openModal}
+                      handleBackButton={handleBackButton}
+                    />
+                  );
+                })}
           </tbody>
         </table>
+        {foundUser?.length === 0 && (
+          <p className={Styles.notFound}>
+            موردی پیدا نشد 😓
+            <ImExit onClick={handleBackButton} />
+          </p>
+        )}
       </div>
     </>
   );
 }
 
-function User({ user }) {
+function User({ user, foundUser, onClick, handleBackButton }) {
   return (
     <tr>
       <td>{user.id}</td>
       <td>{user.firstName}</td>
       <td>{user.lastName}</td>
       <td>{user.nationalId}</td>
-      <Actions/>
+      <td className={Styles.actions}>
+        <Actions
+          foundUser={foundUser}
+          onClick={onClick}
+          handleBackButton={handleBackButton}
+        />
+      </td>
     </tr>
   );
 }
 
-function Actions({ foundUser }) {
+function Actions({ foundUser, onClick, handleBackButton }) {
   return (
-    <tr>
-      <td className={Styles.actions}>
-        <span>
-          <BiShow />
-        </span>
-        <span>
-          <LiaEditSolid />
-        </span>
-        <span>
-          <GrMap />
-        </span>
-        <span>
-          <RiDeleteBin6Line />
-        </span>
-        <span>
-          <AiOutlineBarChart />
-        </span>
-        {foundUser && (
-          <span>
-            <IoArrowBack />
-          </span>
-        )}
-      </td>
-    </tr>
+    <>
+      <BiShow style={{ color: "#119cb6" }} onClick={onClick} />
+      <LiaEditSolid style={{ color: "#e4aa49" }} onClick={onClick} />
+      <GrMap style={{ color: "#b22e3a" }} onClick={onClick} />
+      <RiDeleteBin6Line style={{ color: "#ee9a93" }} onClick={onClick} />
+      <AiOutlineBarChart style={{ color: "orange" }} onClick={onClick} />
+      {foundUser && <IoArrowBack onClick={handleBackButton} />}
+    </>
   );
 }
