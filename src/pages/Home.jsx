@@ -7,7 +7,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { AiOutlineBarChart } from "react-icons/ai";
 import Modal from "../components/Modal/Modal";
 import { useState } from "react";
-import { users } from "../components/UserData/Users";
+import { idNumber, users } from "../components/UserData/Users";
 import { IoArrowBack } from "react-icons/io5";
 import Button from "../components/Button/Button";
 import { ImExit } from "react-icons/im";
@@ -15,47 +15,101 @@ import { ImExit } from "react-icons/im";
 export default function Home() {
   const [foundUser, setFoundUser] = useState(null);
   const [usersState, setUsersState] = useState(users);
-  const [close, setClose] = useState(true);
   const [closeModal, setCloseModal] = useState(true);
   const [userId, setUserId] = useState(0);
-  const [modalType, setModalType] = useState("add");
+  const [modalType, setModalType] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [nationalId, setNationalId] = useState("");
+  const [id, setId] = useState(idNumber + 1);
+
+  function handleUserSearch(e) {
+    e.preventDefault();
+    if (!nationalId.trim() && !firstName.trim() && !lastName.trim()) return;
+    let foundUser = usersState.filter((user) => {
+      if (
+        user.firstName === firstName.trim() &&
+        user.lastName === lastName.trim() &&
+        user.nationalId === nationalId.trim()
+      ) {
+        return user;
+      }
+    });
+    setFoundUser(foundUser);
+    openModal();
+  }
+
   function handleBackButton() {
     setFoundUser(null);
   }
-  function handleCloseBtn() {
-    setClose((prevState) => !prevState);
-  }
+
   function openModal() {
     setCloseModal((prevClose) => !prevClose);
+    setFirstName("");
+    setLastName("");
+    setNationalId("");
   }
   function handleDeletingUser() {
     const remainedUsers = usersState.filter((user) => user.id !== userId);
     setUsersState(remainedUsers);
     setCloseModal((prevClose) => !prevClose);
   }
-  function handleAddUser() {}
-  function handleShowUser() {
-    // let shownUser = usersState.find((user) => user.id === userId);
-    // setUsersState(shownUser);
-    // console.log(shownUser);
-    console.log(userId);
+
+  function handleAddUser() {
+    const newUser = { id, firstName, lastName, nationalId };
+    if (nationalId.trim() && firstName.trim() && lastName.trim()) {
+      let checkedUser = usersState.some(
+        (user) => user.nationalId === newUser.nationalId
+      );
+      if (checkedUser) {
+        alert("کد ملی وارد شده تکراری است دوباره تلاش کنید 🙃");
+      } else {
+        setId((id) => id + 1);
+        setUsersState((usersState) => [...usersState, newUser]);
+        openModal();
+      }
+    } else {
+      return;
+    }
   }
-  function handleEditUser() {}
+
+  function handleShowUser() {
+    let selectedUser = usersState.find((user) => {
+      return user.id === userId;
+    });
+    if (selectedUser) {
+      setFirstName(selectedUser.firstName);
+      setLastName(selectedUser.lastName);
+      setNationalId(selectedUser.nationalId);
+    }
+    if (closeModal) {
+      setFirstName("");
+      setLastName("");
+      setNationalId("");
+    }
+  }
+  function handleEditUser() {
+    let selectedUser = usersState.find((user) => {
+      return user.id === userId;
+    });
+    if (selectedUser) {
+      setFirstName(selectedUser.firstName);
+      setLastName(selectedUser.lastName);
+      setNationalId(selectedUser.nationalId);
+    }
+    console.log(selectedUser.firstName);
+
+    // setFirstName("");
+    // setLastName("");
+    // setNationalId("");
+    // openModal();
+  }
 
   return (
     <>
-      <Modal
-        defaultButtonText="جستجو"
-        isDoubled={false}
-        isModal={false}
-        name="جستجو"
-        setFoundUser={setFoundUser}
-        closeModal={handleCloseBtn}
-        isClosed={close}
-        modalType="add"
-      />
       {!closeModal && (
         <Modal
+          isModal={modalType === "search" ? false : true}
           isClosed={closeModal}
           closeModal={openModal}
           name={
@@ -67,6 +121,8 @@ export default function Home() {
               ? "مشاهده"
               : modalType === "edit"
               ? "ویرایش"
+              : modalType === "search"
+              ? "جستجو"
               : ""
           }
           defaultButtonText={
@@ -76,9 +132,11 @@ export default function Home() {
               ? "بستن"
               : modalType === "edit"
               ? "تایید"
+              : modalType === "search"
+              ? "جستجو"
               : ""
           }
-          isDoubled={modalType !== "show"}
+          isDoubled={modalType !== "show" && modalType !== "search"}
           modalType={modalType}
           onClick={
             modalType === "delete"
@@ -89,8 +147,16 @@ export default function Home() {
               ? handleEditUser
               : modalType === "add"
               ? handleAddUser
-              : () => {}
+              : modalType === "search"
+              ? handleUserSearch
+              : console.log("Error")
           }
+          firstName={firstName}
+          setFirstName={setFirstName}
+          lastName={lastName}
+          setLastName={setLastName}
+          nationalId={nationalId}
+          setNationalId={setNationalId}
         />
       )}
       <div className={Styles.table_wrapper}>
@@ -103,7 +169,14 @@ export default function Home() {
               setModalType("add");
             }}
           />
-          <Button type="link" text="جستجو" onClick={handleCloseBtn} />
+          <Button
+            type="link"
+            text="جستجو"
+            onClick={() => {
+              openModal();
+              setModalType("search");
+            }}
+          />
         </div>
         <table className={Styles.fl_table}>
           <thead>

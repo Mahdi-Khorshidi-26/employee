@@ -9,14 +9,16 @@
 
 .btnContainer a {
     width: 100%;
-    padding: .5rem 2rem;
+    padding: .5rem 4rem;
     font-size: 1.3rem;
     outline: none;
     cursor: pointer;
     font-size: 2rem;
     transition: all .2s;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 1rem;
 }
 

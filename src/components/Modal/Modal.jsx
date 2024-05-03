@@ -1,10 +1,8 @@
-import { useState } from "react";
 import Styles from "./modal.module.css";
 import { IoMdClose } from "react-icons/io";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PropTypes from "prop-types";
-import { users } from "../UserData/Users";
 
 Modal.propTypes = {
   isModal: PropTypes.bool,
@@ -17,42 +15,31 @@ Modal.propTypes = {
   isClosed: PropTypes.bool,
   modalType: PropTypes.string,
   onClick: PropTypes.func,
+  firstName: PropTypes.string,
+  setFirstName: PropTypes.func,
+  lastName: PropTypes.string,
+  setLastName: PropTypes.func,
+  nationalId: PropTypes.string,
+  setNationalId: PropTypes.func,
 };
 
 export default function Modal({
-  isModal = true,
+  isModal,
   isDoubled = true,
   name = "افزودن",
   defaultButtonText = "افزودن",
   buttonText2 = "بستن",
-  setFoundUser = () => {},
   closeModal = () => {},
   isClosed = true,
   modalType = "add",
   onClick = () => {},
+  firstName,
+  setFirstName,
+  lastName,
+  setLastName,
+  nationalId,
+  setNationalId,
 }) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [nationalId, setNationalId] = useState("");
-  function handleFormSubmit(e) {
-    e.preventDefault();
-    if (!nationalId.trim() && !firstName.trim() && !lastName.trim()) return;
-    const inputUser = { firstName, lastName, nationalId };
-    let foundUser = users.filter((user) => {
-      if (
-        user.firstName === inputUser.firstName.trim() &&
-        user.lastName === inputUser.lastName.trim() &&
-        user.nationalId === inputUser.nationalId.trim()
-      ) {
-        return user;
-      }
-    });
-    setFoundUser(foundUser);
-    setFirstName("");
-    setLastName("");
-    setNationalId("");
-  }
-
   return (
     <>
       {!isClosed && (
@@ -69,9 +56,10 @@ export default function Modal({
           </div>
           {modalType === "add" ||
           modalType === "edit" ||
-          modalType === "show" ? (
+          modalType === "show" ||
+          modalType === "search" ? (
             <form
-              onSubmit={(e) => handleFormSubmit(e)}
+              onSubmit={(e) => onClick(e)}
               className={
                 isModal ? `${Styles.formModal}` : `${Styles.formAccordion}`
               }
@@ -108,16 +96,22 @@ export default function Modal({
                   <Button
                     type="submit"
                     text={defaultButtonText}
-                    onClick={closeModal}
+                    onClick={onClick}
                   />
-                  <Button
-                    type="submit"
-                    text={buttonText2}
-                    onClick={closeModal}
-                  />
+                  <Button text={buttonText2} onClick={closeModal} type="link" />
                 </div>
               ) : (
-                <Button type="submit" text={defaultButtonText} />
+                <Button
+                  text={defaultButtonText}
+                  onClick={
+                    modalType === "search"
+                      ? onClick
+                      : modalType === "show"
+                      ? closeModal
+                      : () => {}
+                  }
+                  type={modalType === "search" ? "submit" : "link"}
+                />
               )}
             </form>
           ) : (

@@ -1,4 +1,4 @@
-let idNumber = 0;
+export let idNumber = 0;
 export const users = [
   {
     firstName: "مهدی",
