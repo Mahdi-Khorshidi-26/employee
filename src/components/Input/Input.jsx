@@ -6,7 +6,7 @@ export default function Input({
   label,
   id,
   type,
-  required = false,
+  required = true,
   disable = false,
 }) {
   return (

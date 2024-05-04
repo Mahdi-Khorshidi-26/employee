@@ -3,7 +3,8 @@ import { IoMdClose } from "react-icons/io";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import PropTypes from "prop-types";
-
+import Map from "../Map/Map";
+import Chart from "../Chart/Chart";
 Modal.propTypes = {
   isModal: PropTypes.bool,
   isDoubled: PropTypes.bool,
@@ -15,12 +16,15 @@ Modal.propTypes = {
   isClosed: PropTypes.bool,
   modalType: PropTypes.string,
   onClick: PropTypes.func,
-  firstName: PropTypes.string,
+  firstName: PropTypes.string.isRequired,
   setFirstName: PropTypes.func,
-  lastName: PropTypes.string,
+  lastName: PropTypes.string.isRequired,
   setLastName: PropTypes.func,
-  nationalId: PropTypes.string,
+  nationalId: PropTypes.string.isRequired,
   setNationalId: PropTypes.func,
+  latitude: PropTypes.number,
+  longitude: PropTypes.number,
+  data: PropTypes.array,
 };
 
 export default function Modal({
@@ -39,6 +43,9 @@ export default function Modal({
   setLastName,
   nationalId,
   setNationalId,
+  latitude,
+  longitude,
+  data,
 }) {
   return (
     <>
@@ -70,7 +77,6 @@ export default function Modal({
                 setValue={setFirstName}
                 type="text"
                 value={firstName}
-                required={!isModal}
                 disable={modalType === "show"}
               />
               <Input
@@ -79,7 +85,6 @@ export default function Modal({
                 setValue={setLastName}
                 type="text"
                 value={lastName}
-                required={!isModal}
                 disable={modalType === "show"}
               />
               <Input
@@ -88,7 +93,6 @@ export default function Modal({
                 setValue={setNationalId}
                 type="text"
                 value={nationalId}
-                required={!isModal}
                 disable={modalType === "show"}
               />
               {isDoubled ? (
@@ -116,9 +120,31 @@ export default function Modal({
             </form>
           ) : (
             <>
-              <p>آیا رکورد حذف شود ؟</p>
-              <Button text="بله" onClick={() => onClick()} />
-              <Button text="خیر" onClick={closeModal} />
+              {modalType === "delete" ? (
+                <>
+                  <div className={Styles.deleteBox}>
+                    <p>آیا رکورد حذف شود ؟</p>
+                    <div className={Styles.deleteBoxBtnContainer}>
+                      <Button text="بله" onClick={() => onClick()} />
+                      <Button text="خیر" onClick={closeModal} />
+                    </div>
+                  </div>
+                </>
+              ) : modalType === "map" ? (
+                <>
+                  <div className={Styles.mapContainer}>
+                    <Map latitude={latitude} longitude={longitude} />
+                  </div>
+                </>
+              ) : modalType === "chart" ? (
+                <>
+                  <div className={Styles.chartContainer}>
+                    <Chart data={data} />
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </>
           )}
         </div>

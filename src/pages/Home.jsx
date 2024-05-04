@@ -22,21 +22,67 @@ export default function Home() {
   const [lastName, setLastName] = useState("");
   const [nationalId, setNationalId] = useState("");
   const [id, setId] = useState(idNumber + 1);
+  const [longitude, setLongitude] = useState(51.4749824);
+  const [latitude, setLatitude] = useState(35.3645394);
+  const [data, setData] = useState([
+    {
+      name: "Page A",
+      uv: 4000,
+      pv: 2400,
+    },
+    {
+      name: "Page B",
+      uv: 3000,
+      pv: 1398,
+    },
+    {
+      name: "Page C",
+      uv: 2000,
+      pv: 9800,
+    },
+    {
+      name: "Page D",
+      uv: 2780,
+      pv: 3908,
+    },
+    {
+      name: "Page E",
+      uv: 1890,
+      pv: 4800,
+    },
+    {
+      name: "Page F",
+      uv: 2390,
+      pv: 3800,
+    },
+    {
+      name: "Page G",
+      uv: 3490,
+      pv: 4300,
+    },
+  ]);
 
   function handleUserSearch(e) {
     e.preventDefault();
-    if (!nationalId.trim() && !firstName.trim() && !lastName.trim()) return;
+    if (!nationalId.trim() || !firstName.trim() || !lastName.trim()) return;
     let foundUser = usersState.filter((user) => {
       if (
         user.firstName === firstName.trim() &&
         user.lastName === lastName.trim() &&
+        !isNaN(user.nationalId) === !isNaN(nationalId.trim()) &&
+        nationalId.trim().length === 10 &&
         user.nationalId === nationalId.trim()
       ) {
         return user;
       }
     });
-    setFoundUser(foundUser);
-    openModal();
+    if (foundUser.length) {
+      setFoundUser(foundUser);
+      openModal();
+    } else {
+      alert("کد ملی وارد شده صحیح نمی باشد 😕☹");
+    }
+    setNationalId("");
   }
 
   function handleBackButton() {
@@ -56,7 +102,15 @@ export default function Home() {
   }
 
   function handleAddUser() {
-    const newUser = { id, firstName, lastName, nationalId };
+    const newUser = {
+      id,
+      firstName,
+      lastName,
+      nationalId,
+      data,
+      latitude,
+      longitude,
+    };
     if (nationalId.trim() && firstName.trim() && lastName.trim()) {
       let checkedUser = usersState.some(
         (user) => user.nationalId === newUser.nationalId
@@ -64,47 +118,50 @@ export default function Home() {
       if (checkedUser) {
         alert("کد ملی وارد شده تکراری است دوباره تلاش کنید 🙃");
       } else {
-        setId((id) => id + 1);
-        setUsersState((usersState) => [...usersState, newUser]);
-        openModal();
+        if (newUser.nationalId.length == 10 && !isNaN(newUser.nationalId)) {
+          setId((id) => id + 1);
+          setUsersState((usersState) => [...usersState, newUser]);
+          openModal();
+        } else {
+          alert("کد ملی وارد شده صحیح نمی باشد 😕☹");
+        }
       }
     } else {
       return;
     }
+    setNationalId("");
   }
 
-  function handleShowUser() {
+  function handleShowUser(id) {
+    openModal();
     let selectedUser = usersState.find((user) => {
-      return user.id === userId;
+      return user.id === id;
     });
     if (selectedUser) {
       setFirstName(selectedUser.firstName);
       setLastName(selectedUser.lastName);
       setNationalId(selectedUser.nationalId);
     }
-    if (closeModal) {
-      setFirstName("");
-      setLastName("");
-      setNationalId("");
-    }
   }
-  function handleEditUser() {
+  function handleEditUser(id) {
+    openModal();
+    handleShowUser(id);
+  }
+  function handleMap(id) {
+    openModal();
     let selectedUser = usersState.find((user) => {
-      return user.id === userId;
+      return user.id === id;
     });
-    if (selectedUser) {
-      setFirstName(selectedUser.firstName);
-      setLastName(selectedUser.lastName);
-      setNationalId(selectedUser.nationalId);
-    }
-    console.log(selectedUser.firstName);
-
-    // setFirstName("");
-    // setLastName("");
-    // setNationalId("");
-    // openModal();
+    setLatitude(selectedUser.latitude);
+    setLongitude(selectedUser.longitude);
   }
-
+  function handleChart(id) {
+    openModal();
+    let selectedUser = usersState.find((user) => {
+      return user.id === id;
+    });
+    setData(selectedUser.data);
+  }
   return (
     <>
       {!closeModal && (
@@ -123,6 +180,10 @@ export default function Home() {
               ? "ویرایش"
               : modalType === "search"
               ? "جستجو"
+              : modalType === "map"
+              ? "نقشه"
+              : modalType === "chart"
+              ? "نمودار"
               : ""
           }
           defaultButtonText={
@@ -141,15 +202,13 @@ export default function Home() {
           onClick={
             modalType === "delete"
               ? handleDeletingUser
-              : modalType === "show"
-              ? handleShowUser
               : modalType === "edit"
               ? handleEditUser
               : modalType === "add"
               ? handleAddUser
               : modalType === "search"
               ? handleUserSearch
-              : console.log("Error")
+              : () => {}
           }
           firstName={firstName}
           setFirstName={setFirstName}
@@ -157,6 +216,9 @@ export default function Home() {
           setLastName={setLastName}
           nationalId={nationalId}
           setNationalId={setNationalId}
+          longitude={longitude}
+          latitude={latitude}
+          data={data}
         />
       )}
       <div className={Styles.table_wrapper}>
@@ -200,6 +262,10 @@ export default function Home() {
                       handleBackButton={handleBackButton}
                       setUserId={setUserId}
                       setModalType={setModalType}
+                      handleShowUser={handleShowUser}
+                      handleEditUser={handleEditUser}
+                      handleMap={handleMap}
+                      handleChart={handleChart}
                     />
                   );
                 })
@@ -213,6 +279,10 @@ export default function Home() {
                       handleBackButton={handleBackButton}
                       setUserId={setUserId}
                       setModalType={setModalType}
+                      handleShowUser={handleShowUser}
+                      handleEditUser={handleEditUser}
+                      handleMap={handleMap}
+                      handleChart={handleChart}
                     />
                   );
                 })}
@@ -236,6 +306,10 @@ function User({
   handleBackButton,
   setUserId,
   setModalType,
+  handleShowUser,
+  handleEditUser,
+  handleMap,
+  handleChart,
 }) {
   return (
     <tr>
@@ -251,6 +325,10 @@ function User({
           userId={user.id}
           setUserId={setUserId}
           setModalType={setModalType}
+          handleShowUser={handleShowUser}
+          handleEditUser={handleEditUser}
+          handleMap={handleMap}
+          handleChart={handleChart}
         />
       </td>
     </tr>
@@ -264,14 +342,18 @@ function Actions({
   userId,
   setUserId,
   setModalType,
+  handleShowUser,
+  handleEditUser,
+  handleMap,
+  handleChart,
 }) {
   return (
     <>
       <BiShow
         style={{ color: "#119cb6" }}
         onClick={() => {
-          onClick();
           setUserId(userId);
+          handleShowUser(userId);
           setModalType("show");
         }}
       />
@@ -280,15 +362,16 @@ function Actions({
         onClick={() => {
           onClick();
           setUserId(userId);
+          handleEditUser(userId);
           setModalType("edit");
         }}
       />
       <GrMap
         style={{ color: "#b22e3a" }}
         onClick={() => {
-          onClick();
           setUserId(userId);
-          setModalType("show");
+          handleMap(userId);
+          setModalType("map");
         }}
       />
       <RiDeleteBin6Line
@@ -302,9 +385,9 @@ function Actions({
       <AiOutlineBarChart
         style={{ color: "orange" }}
         onClick={() => {
-          onClick();
           setUserId(userId);
-          setModalType("show");
+          handleChart(userId);
+          setModalType("chart");
         }}
       />
       {foundUser && <IoArrowBack onClick={handleBackButton} />}
