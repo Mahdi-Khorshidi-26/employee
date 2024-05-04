@@ -76,8 +76,8 @@ export default function Home() {
         return user;
       }
     });
+    setFoundUser(foundUser);
     if (foundUser.length) {
-      setFoundUser(foundUser);
       openModal();
     } else {
       alert("کد ملی وارد شده صحیح نمی باشد 😕☹");
@@ -146,6 +146,7 @@ export default function Home() {
   function handleEditUser(id) {
     openModal();
     handleShowUser(id);
+    handleAddUser();
   }
   function handleMap(id) {
     openModal();
